@@ -1,4 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using StoreBackend;
+using StoreBackend.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,13 +9,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddDbContext<DatabaseContext>(options => options.UseSqlServer("Server=localhost;Database=MyDatabase;User Id=myuser;Password=mypassword;"));
+
+var swaggerOptions = builder.Configuration.GetSection("SwaggerOptions");
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
     {
-        Title = "Store Backend",
-        Version = "v1",
-        Description = "This is my awesome API built with .NET 8",
+        Title = swaggerOptions["Title"],
+        Version = swaggerOptions["Version"],
+        Description = swaggerOptions["Description"],
     });
 });
 
