@@ -18,7 +18,7 @@ public class ProfileController : ControllerBase
     public IActionResult Get(int id)
     {
         // فرق اتنتیکیتد و اتورایزد
-        var user = _context.Users.Where(x => x.Id == id).FirstOrDefault();
+        var user = _context.Users.Where(x=>x.Id == id).FirstOrDefault();
         return Ok(user);
     }
 }
