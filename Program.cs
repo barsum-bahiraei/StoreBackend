@@ -10,7 +10,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddDbContext<DatabaseContext>(options => options.UseSqlServer("Server=localhost;Database=MyDatabase;User Id=myuser;Password=mypassword;"));
+builder.Services.AddDbContext<DatabaseContext>(options =>
+    options.UseSqlServer("Server=localhost;Database=Store;User ID=sa;Password=database1234;TrustServerCertificate=True;"));
 
 var swaggerOptions = builder.Configuration.GetSection("SwaggerOptions");
 builder.Services.AddSwaggerGen(options =>

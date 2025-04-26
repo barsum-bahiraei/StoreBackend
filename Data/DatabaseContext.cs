@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using StoreBackend.Models;
+using StoreBackend.Entities;
 
 namespace StoreBackend.Data;
 

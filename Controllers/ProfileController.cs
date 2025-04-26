@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using StoreBackend.Data;
+using StoreBackend.Models;
 
 namespace StoreBackend.Controllers;
 [ApiController]
@@ -19,6 +19,17 @@ public class ProfileController : ControllerBase
     {
         // فرق اتنتیکیتد و اتورایزد
         var user = _context.Users.Where(x=>x.Id == id).FirstOrDefault();
+        return Ok(user);
+    }
+
+    [HttpPost]
+    public IActionResult Create(UserCreate user)
+    {
+        _context.Users.Add(new Entities.User
+        {
+            Name = user.Name
+        });
+        _context.SaveChanges();
         return Ok(user);
     }
 }
