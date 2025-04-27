@@ -1,6 +1,6 @@
 ﻿namespace StoreBackend.Models;
 
-public class UserCreate
+public class UserCreateModel
 {
     public string Name { get; set; }
     public string Family { get; set; }
