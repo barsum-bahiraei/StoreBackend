@@ -3,9 +3,10 @@ using System.Text;
 
 namespace StoreBackend.Helpers;
 
+
 public class PasswordHash
 {
-    private readonly string _hasKey;
+    private readonly string? _hasKey;
 
     public PasswordHash(IConfiguration configuration)
     {
