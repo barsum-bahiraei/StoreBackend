@@ -20,12 +20,12 @@ public class PasswordHash
 
     public string HashPassword(string password)
     {
-        using (var sha256 = SHA256.Create())
-        {
-            var combinedPassword = password + _hasKey;
-            var bytes = Encoding.UTF8.GetBytes(combinedPassword);
-            var hash = sha256.ComputeHash(bytes);
-            return Convert.ToBase64String(hash);
-        }
+        using var sha256 = SHA256.Create();
+
+        var combinedPassword = password + _hasKey;
+        var bytes = Encoding.UTF8.GetBytes(combinedPassword);
+        var hash = sha256.ComputeHash(bytes);
+        return Convert.ToBase64String(hash);
+
     }
 }
