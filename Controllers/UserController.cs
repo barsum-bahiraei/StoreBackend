@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StoreBackend.Data;
+using StoreBackend.Helpers;
 using StoreBackend.Models;
 
 namespace StoreBackend.Controllers;
@@ -9,10 +10,12 @@ namespace StoreBackend.Controllers;
 public class UserController : ControllerBase
 {
     private readonly DatabaseContext _context;
+    private readonly HashHelper _hashHelper;
 
-    public UserController(DatabaseContext context)
+    public UserController(DatabaseContext context, HashHelper hashHelper)
     {
         _context = context;
+        _hashHelper = hashHelper;
     }
 
     [HttpGet]
@@ -32,7 +35,7 @@ public class UserController : ControllerBase
             Name = user.Name,
             Family = user.Family,
             Email = user.Email,
-            Password = user.Password,
+            Password = _hashHelper.HashSHA256(user.Password),
             Username = user.Name,
         });
         _context.SaveChanges();
