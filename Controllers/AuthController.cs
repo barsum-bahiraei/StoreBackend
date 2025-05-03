@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using StoreBackend.Data;
+using StoreBackend.Helpers;
 using StoreBackend.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -9,9 +11,9 @@ using System.Text;
 namespace StoreBackend.Controllers;
 [Route("api/[controller]")]
 [ApiController]
-public class AuthController(IConfiguration configuration) : ControllerBase
+public class AuthController(IConfiguration configuration, DatabaseContext context, IHashHelper hashHelper) : ControllerBase
 {
-    [HttpPost]
+    [HttpPost("SignIn")]
     public IActionResult Login(LoginModel loginModel)
     {
         if (IsValidUser(loginModel))
@@ -25,11 +27,26 @@ public class AuthController(IConfiguration configuration) : ControllerBase
 
     private bool IsValidUser(LoginModel loginModel)
     {
-        return loginModel.UserName == "barsum" && loginModel.Password == "1234";
+        var user = context.Users.FirstOrDefault(u => u.Username == loginModel.UserName);
+        if (user == null)
+        {
+            return false;
+        }
+        var hashPassword = hashHelper.HashSHA256(loginModel.Password);
+        if (hashPassword != user.Password)
+        {
+            return false;
+        }
+        return true;
     }
 
     private string GenerateJwtToken(string userName)
     {
+        if (string.IsNullOrEmpty(userName))
+        {
+            throw new ArgumentException("Username cannot be null or empty", nameof(userName));
+        }
+
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
@@ -37,7 +54,7 @@ public class AuthController(IConfiguration configuration) : ControllerBase
         {
             new Claim(JwtRegisteredClaimNames.Sub, userName),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(ClaimTypes.Role, "User") // Example role
+            new Claim(ClaimTypes.Role, "User")
         };
 
         var token = new JwtSecurityToken(

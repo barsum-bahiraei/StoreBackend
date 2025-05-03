@@ -3,42 +3,41 @@ using Microsoft.AspNetCore.Mvc;
 using StoreBackend.Data;
 using StoreBackend.Helpers;
 using StoreBackend.Models;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace StoreBackend.Controllers;
 [ApiController]
 [Route("api/[controller]")]
-public class UserController : ControllerBase
+public class UserController(DatabaseContext context, IHashHelper hashHelper) : ControllerBase
 {
-    private readonly DatabaseContext _context;
-    private readonly HashHelper _hashHelper;
-
-    public UserController(DatabaseContext context, HashHelper hashHelper)
-    {
-        _context = context;
-        _hashHelper = hashHelper;
-    }
-
-    [HttpGet]
+    [HttpGet("Detail")]
     [Authorize]
-    public IActionResult Get()
+    public IActionResult Detail()
     {
         // فرق اتنتیکیتد و اتورایزد
-        //var user = _context.Users.Where(x=>x.Id == id).FirstOrDefault();
-        return Ok("user");
+        var userName = User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value;
+
+        var user = context.Users.FirstOrDefault(u => u.Username == userName);
+        return Ok(user);
     }
 
-    [HttpPost]
+    [HttpPost("Create")]
     public IActionResult Create(UserCreateModel user)
     {
-        _context.Users.Add(new Entities.User
+        var hasUser = context.Users.Any(u => u.Email == user.Email);
+        if (hasUser)
+        {
+            return BadRequest("Email is already in use.");
+        }
+        context.Users.Add(new Entities.User
         {
             Name = user.Name,
             Family = user.Family,
             Email = user.Email,
-            Password = _hashHelper.HashSHA256(user.Password),
-            Username = user.Name,
+            Password = hashHelper.HashSHA256(user.Password),
+            Username = user.Email,
         });
-        _context.SaveChanges();
+        context.SaveChanges();
         return Ok(user);
     }
 }

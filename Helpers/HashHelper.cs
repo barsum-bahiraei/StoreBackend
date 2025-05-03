@@ -4,7 +4,7 @@ using System.Text;
 namespace StoreBackend.Helpers;
 
 
-public class HashHelper
+public class HashHelper : IHashHelper
 {
     private readonly string? _hasKey;
 
@@ -17,6 +17,7 @@ public class HashHelper
             throw new Exception("HashKey is not configured in appsettings.json!");
         }
     }
+
 
     public string HashSHA256(string str)
     {
