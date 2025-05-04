@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using StoreBackend.Data;
 using StoreBackend.Helpers;
 using StoreBackend.Models;
+using StoreBackend.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -11,60 +12,22 @@ using System.Text;
 namespace StoreBackend.Controllers;
 [Route("api/[controller]")]
 [ApiController]
-public class AuthController(IConfiguration configuration, DatabaseContext context, IHashHelper hashHelper) : ControllerBase
+public class AuthController : ControllerBase
 {
+    private readonly AuthService _authService;
+    public AuthController(AuthService authService)
+    {
+        _authService = authService;
+    }
     [HttpPost("SignIn")]
     public IActionResult Login(LoginModel loginModel)
     {
-        if (IsValidUser(loginModel))
+        if (_authService.IsValidUser(loginModel))
         {
-            var token = GenerateJwtToken(loginModel.UserName);
+            var token = _authService.GenerateJwtToken(loginModel.UserName);
             return Ok(token);
         }
         return Unauthorized();
 
-    }
-
-    private bool IsValidUser(LoginModel loginModel)
-    {
-        var user = context.Users.FirstOrDefault(u => u.Username == loginModel.UserName);
-        if (user == null)
-        {
-            return false;
-        }
-        var hashPassword = hashHelper.HashSHA256(loginModel.Password);
-        if (hashPassword != user.Password)
-        {
-            return false;
-        }
-        return true;
-    }
-
-    private string GenerateJwtToken(string userName)
-    {
-        if (string.IsNullOrEmpty(userName))
-        {
-            throw new ArgumentException("Username cannot be null or empty", nameof(userName));
-        }
-
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-        var claims = new[]
-        {
-            new Claim(JwtRegisteredClaimNames.Sub, userName),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(ClaimTypes.Role, "User")
-        };
-
-        var token = new JwtSecurityToken(
-            issuer: configuration["Jwt:Issuer"],
-            audience: configuration["Jwt:Audience"],
-            claims: claims,
-            expires: DateTime.Now.AddHours(3),
-            signingCredentials: creds
-        );
-
-        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 }
