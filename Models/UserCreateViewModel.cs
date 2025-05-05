@@ -1,6 +1,6 @@
-﻿namespace StoreBackend.Entities;
+﻿namespace StoreBackend.Models;
 
-public class User
+public class UserCreateViewModel
 {
     public int Id { get; set; }
     public string Name { get; set; }

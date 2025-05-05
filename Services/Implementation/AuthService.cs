@@ -11,11 +11,11 @@ namespace StoreBackend.Services.Implementation;
 
 public class AuthService(IConfiguration configuration, DatabaseContext context) : IAuthService
 {
-    public string GenerateJwtToken(string userName)
+    public string GenerateJwtToken(string email)
     {
-        if (string.IsNullOrEmpty(userName))
+        if (string.IsNullOrEmpty(email))
         {
-            throw new ArgumentException("Username cannot be null or empty", nameof(userName));
+            throw new ArgumentException("Email cannot be null or empty", nameof(email));
         }
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
@@ -23,7 +23,7 @@ public class AuthService(IConfiguration configuration, DatabaseContext context) 
 
         var claims = new[]
         {
-            new Claim(JwtRegisteredClaimNames.NameId, userName),
+            new Claim(JwtRegisteredClaimNames.Email, email),
             //new Claim(ClaimTypes.Role, "User")
         };
 
@@ -38,10 +38,10 @@ public class AuthService(IConfiguration configuration, DatabaseContext context) 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public bool IsValidUser(LoginModel loginModel)
+    public bool IsValidUser(LoginDTO loginModel)
     {
         var hashPassword = HashHelper.HashSHA256(loginModel.Password, configuration);
-        var user = context.Users.FirstOrDefault(u => u.Username == loginModel.UserName && u.Password == hashPassword);
+        var user = context.Users.FirstOrDefault(u => u.Email == loginModel.Email && u.Password == hashPassword);
         return user != null;
     }
 }

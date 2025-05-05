@@ -4,5 +4,5 @@ namespace StoreBackend.Services.Contracts;
 public interface IAuthService
 {
     string GenerateJwtToken(string userName);
-    bool IsValidUser(LoginModel loginModel);
+    bool IsValidUser(LoginDTO loginModel);
 }

@@ -8,7 +8,7 @@ namespace StoreBackend.Controllers;
 public class AuthController(AuthService authService) : ControllerBase
 {
     [HttpPost("SignIn")]
-    public IActionResult Login(LoginModel loginModel)
+    public IActionResult Login(LoginDTO loginModel)
     {
         if (authService.IsValidUser(loginModel))
         {
