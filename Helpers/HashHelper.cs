@@ -1,14 +1,16 @@
-﻿using System.Security.Cryptography;
+﻿using Microsoft.Extensions.Configuration;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace StoreBackend.Helpers;
 
 
-public class HashHelper : IHashHelper
+public static class HashHelper
 {
-    private readonly string? _hasKey;
+    private static string? _hasKey;
 
-    public HashHelper(IConfiguration configuration)
+
+    public static string HashSHA256(string str, IConfiguration configuration)
     {
         _hasKey = configuration.GetConnectionString("PasswordHashKey");
 
@@ -16,11 +18,6 @@ public class HashHelper : IHashHelper
         {
             throw new Exception("HashKey is not configured in appsettings.json!");
         }
-    }
-
-
-    public string HashSHA256(string str)
-    {
         using var sha256 = SHA256.Create();
 
         var combinedPassword = str + _hasKey;
@@ -29,8 +26,14 @@ public class HashHelper : IHashHelper
         return Convert.ToBase64String(hash);
 
     }
-    public string HashSHA512(string str)
+    public static string HashSHA512(string str, IConfiguration configuration)
     {
+        _hasKey = configuration.GetConnectionString("PasswordHashKey");
+
+        if (string.IsNullOrEmpty(_hasKey))
+        {
+            throw new Exception("HashKey is not configured in appsettings.json!");
+        }
         using var sha512 = SHA512.Create();
 
         var combinedPassword = str + _hasKey;

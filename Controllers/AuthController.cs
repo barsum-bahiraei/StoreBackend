@@ -1,23 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StoreBackend.Models;
-using StoreBackend.Services;
+using StoreBackend.Services.Implementation;
 
 namespace StoreBackend.Controllers;
 [Route("api/[controller]")]
 [ApiController]
-public class AuthController : ControllerBase
+public class AuthController(AuthService authService) : ControllerBase
 {
-    private readonly AuthService _authService;
-    public AuthController(AuthService authService)
-    {
-        _authService = authService;
-    }
     [HttpPost("SignIn")]
     public IActionResult Login(LoginModel loginModel)
     {
-        if (_authService.IsValidUser(loginModel))
+        if (authService.IsValidUser(loginModel))
         {
-            var token = _authService.GenerateJwtToken(loginModel.UserName);
+            var token = authService.GenerateJwtToken(loginModel.UserName);
             return Ok(token);
         }
         return Unauthorized();

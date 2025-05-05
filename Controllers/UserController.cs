@@ -8,7 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 namespace StoreBackend.Controllers;
 [ApiController]
 [Route("api/[controller]")]
-public class UserController(DatabaseContext context, IHashHelper hashHelper) : ControllerBase
+public class UserController(DatabaseContext context, IConfiguration configuration) : ControllerBase
 {
     [HttpGet("Detail")]
     [Authorize]
@@ -34,7 +34,7 @@ public class UserController(DatabaseContext context, IHashHelper hashHelper) : C
             Name = user.Name,
             Family = user.Family,
             Email = user.Email,
-            Password = hashHelper.HashSHA256(user.Password),
+            Password = HashHelper.HashSHA256(user.Password, configuration),
             Username = user.Email,
         });
         context.SaveChanges();

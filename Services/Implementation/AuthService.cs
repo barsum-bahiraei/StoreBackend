@@ -2,13 +2,14 @@
 using StoreBackend.Data;
 using StoreBackend.Helpers;
 using StoreBackend.Models;
+using StoreBackend.Services.Contracts;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace StoreBackend.Services;
+namespace StoreBackend.Services.Implementation;
 
-public class AuthService(IConfiguration configuration, DatabaseContext context, IHashHelper hashHelper)
+public class AuthService(IConfiguration configuration, DatabaseContext context) : IAuthService
 {
     public string GenerateJwtToken(string userName)
     {
@@ -22,16 +23,15 @@ public class AuthService(IConfiguration configuration, DatabaseContext context, 
 
         var claims = new[]
         {
-            new Claim(JwtRegisteredClaimNames.Sub, userName),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(ClaimTypes.Role, "User")
+            new Claim(JwtRegisteredClaimNames.NameId, userName),
+            //new Claim(ClaimTypes.Role, "User")
         };
 
         var token = new JwtSecurityToken(
             issuer: configuration["Jwt:Issuer"],
             audience: configuration["Jwt:Audience"],
             claims: claims,
-            expires: DateTime.Now.AddHours(3),
+            expires: DateTime.Now.AddHours(48),
             signingCredentials: creds
         );
 
@@ -40,16 +40,8 @@ public class AuthService(IConfiguration configuration, DatabaseContext context, 
 
     public bool IsValidUser(LoginModel loginModel)
     {
-        var user = context.Users.FirstOrDefault(u => u.Username == loginModel.UserName);
-        if (user == null)
-        {
-            return false;
-        }
-        var hashPassword = hashHelper.HashSHA256(loginModel.Password);
-        if (hashPassword != user.Password)
-        {
-            return false;
-        }
-        return true;
+        var hashPassword = HashHelper.HashSHA256(loginModel.Password, configuration);
+        var user = context.Users.FirstOrDefault(u => u.Username == loginModel.UserName && u.Password == hashPassword);
+        return user != null;
     }
 }
