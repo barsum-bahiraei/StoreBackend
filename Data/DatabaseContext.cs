@@ -7,7 +7,7 @@ public class DatabaseContext : DbContext
 {
     public DatabaseContext()
     {
-        
+
     }
     public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
     {
@@ -18,8 +18,30 @@ public class DatabaseContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        modelBuilder.Entity<User>()
-            .HasIndex(u => u.Email)
-            .IsUnique();
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.ToTable("Users");
+
+            entity.HasKey(e => e.Id);
+
+            entity.Property(e => e.Name)
+                  .IsRequired()
+                  .HasMaxLength(20);
+
+            entity.Property(e => e.Family)
+                  .IsRequired()
+                  .HasMaxLength(20);
+
+            entity.Property(e => e.Email)
+                  .IsRequired()
+                  .HasMaxLength(255);
+
+            entity.HasIndex(e => e.Email)
+                  .IsUnique();
+
+            entity.Property(e => e.Password)
+                  .IsRequired()
+                  .HasMaxLength(20);
+        });
     }
 }
