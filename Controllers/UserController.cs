@@ -8,7 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 namespace StoreBackend.Controllers;
 [ApiController]
 [Route("api/[controller]")]
-public class UserController(DatabaseContext context, IConfiguration configuration,IUserService userService) : ControllerBase
+public class UserController(DatabaseContext context, IConfiguration configuration, IUserService userService) : ControllerBase
 {
     [HttpGet("Detail")]
     [Authorize]
@@ -22,9 +22,9 @@ public class UserController(DatabaseContext context, IConfiguration configuratio
     }
 
     [HttpPost("Create")]
-    public IActionResult Create(UserCreateDTO user)
+    public async Task<IActionResult> Create(UserCreateDTO user)
     {
-        var newUser =  userService.Create(user);
+        var newUser = await userService.Create(user);
         return Ok(newUser);
     }
 }

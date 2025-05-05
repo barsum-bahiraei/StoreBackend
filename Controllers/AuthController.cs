@@ -12,7 +12,7 @@ public class AuthController(AuthService authService) : ControllerBase
     {
         if (authService.IsValidUser(loginModel))
         {
-            var token = authService.GenerateJwtToken(loginModel.UserName);
+            var token = authService.GenerateJwtToken(loginModel.Email);
             return Ok(token);
         }
         return Unauthorized();

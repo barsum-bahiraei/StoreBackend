@@ -8,7 +8,7 @@ namespace StoreBackend.Services.Implementation;
 
 public class UserService(DatabaseContext context, IConfiguration configuration) : IUserService
 {
-    public UserCreateViewModel Create(UserCreateDTO user)
+    public async Task<UserCreateViewModel> Create(UserCreateDTO user)
     {
         if (context.Users.Any(u => u.Email == user.Email))
         {
@@ -23,16 +23,17 @@ public class UserService(DatabaseContext context, IConfiguration configuration) 
             Password = HashHelper.HashSHA256(user.Password, configuration),
         };
 
-        context.Users.Add(newUser);
-        context.SaveChanges();
+        await context.Users.AddAsync(newUser);
+        await context.SaveChangesAsync();
 
-        return new UserCreateViewModel
-        {
-            Id = newUser.Id,
-            Name = newUser.Name,
-            Family = newUser.Family,
-            Email = newUser.Email,
-            Password = newUser.Password,
-        };
+        return
+            new UserCreateViewModel
+            {
+                Id = newUser.Id,
+                Name = newUser.Name,
+                Family = newUser.Family,
+                Email = newUser.Email,
+                Password = newUser.Password,
+            };
     }
 }
