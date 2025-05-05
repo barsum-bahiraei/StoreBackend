@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using StoreBackend.Data.Configurations;
 using StoreBackend.Entities;
 
 namespace StoreBackend.Data;
@@ -18,30 +19,10 @@ public class DatabaseContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        modelBuilder.Entity<User>(entity =>
-        {
-            entity.ToTable("Users");
 
-            entity.HasKey(e => e.Id);
+        modelBuilder.ApplyConfiguration(new UserConfiguration());
 
-            entity.Property(e => e.Name)
-                  .IsRequired()
-                  .HasMaxLength(20);
 
-            entity.Property(e => e.Family)
-                  .IsRequired()
-                  .HasMaxLength(20);
-
-            entity.Property(e => e.Email)
-                  .IsRequired()
-                  .HasMaxLength(255);
-
-            entity.HasIndex(e => e.Email)
-                  .IsUnique();
-
-            entity.Property(e => e.Password)
-                  .IsRequired()
-                  .HasMaxLength(20);
-        });
+        // modelBuilder.ApplyConfigurationsFromAssembly(typeof(DatabaseContext).Assembly);
     }
 }
