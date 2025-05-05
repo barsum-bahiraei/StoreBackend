@@ -14,7 +14,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddDbContext<DatabaseContext>(options =>
-    options.UseSqlServer("Server=localhost;Database=Store;User ID=sa;Password=database1234;TrustServerCertificate=True;"));
+{
+    options.UseSqlServer("Server=localhost;Database=Store;User ID=sa;Password=database1234;TrustServerCertificate=True;");
+    options.LogTo(Console.WriteLine, LogLevel.Information).EnableSensitiveDataLogging().EnableDetailedErrors();
+}
+    );
 
 var swaggerOptions = builder.Configuration.GetSection("SwaggerOptions");
 builder.Services.AddSwaggerGen(options =>
