@@ -15,10 +15,10 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddDbContext<DatabaseContext>(options =>
 {
-    options.UseSqlServer("Server=localhost;Database=Store;User ID=sa;Password=database1234;TrustServerCertificate=True;");
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    options.UseSqlServer(connectionString);
     options.LogTo(Console.WriteLine, LogLevel.Information).EnableSensitiveDataLogging().EnableDetailedErrors();
-}
-    );
+});
 
 var swaggerOptions = builder.Configuration.GetSection("SwaggerOptions");
 builder.Services.AddSwaggerGen(options =>
