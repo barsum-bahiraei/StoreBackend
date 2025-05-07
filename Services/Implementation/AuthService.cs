@@ -23,7 +23,7 @@ public class AuthService(IConfiguration configuration, DatabaseContext context) 
 
         var claims = new[]
         {
-            new Claim(JwtRegisteredClaimNames.Email, email),
+            new Claim(ClaimTypes.Email, email),
             //new Claim(ClaimTypes.Role, "User")
         };
 

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using StoreBackend.Data;
 using StoreBackend.Models;
 using StoreBackend.Services.Contracts;
-using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace StoreBackend.Controllers;
 [ApiController]
@@ -15,7 +15,7 @@ public class UserController(DatabaseContext context, IConfiguration configuratio
     public IActionResult Detail()
     {
         // فرق اتنتیکیتد و اتورایزد
-        var email = User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Email)?.Value;
+        var email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
 
         var user = context.Users.FirstOrDefault(u => u.Email == email);
         return Ok(user);
