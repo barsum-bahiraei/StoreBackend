@@ -3,11 +3,26 @@ using StoreBackend.Entities;
 using StoreBackend.Helpers;
 using StoreBackend.Models;
 using StoreBackend.Services.Contracts;
+using System.Security.Claims;
 
 namespace StoreBackend.Services.Implementation;
 
-public class UserService(DatabaseContext context, IConfiguration configuration) : IUserService
+public class UserService(DatabaseContext context, IConfiguration configuration, IHttpContextAccessor httpContextAccessor) : IUserService
 {
+    public async Task<UserDetailViewModel> Detail()
+    {
+        var email = httpContextAccessor.HttpContext?.User.FindFirst(c => c.Type == ClaimTypes.Email)?.Value;
+
+        var user = context.Users.FirstOrDefault(u => u.Email == email);
+        return new UserDetailViewModel
+        {
+            Id = user.Id,
+            Email = email,
+            Family = user.Family,
+            Name = user.Name,
+        };
+    }
+
     public async Task<UserCreateViewModel> Create(UserCreateDTO user)
     {
         if (context.Users.Any(u => u.Email == user.Email))

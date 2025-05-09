@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using StoreBackend.Data;
+using StoreBackend.Middlewares;
 using StoreBackend.Services.Contracts;
 using StoreBackend.Services.Implementation;
 using System.Text;
@@ -92,6 +93,8 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.MapControllers();
 

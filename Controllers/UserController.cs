@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StoreBackend.Data;
+using StoreBackend.Helpers;
 using StoreBackend.Models;
 using StoreBackend.Services.Contracts;
 using System.Security.Claims;
@@ -12,19 +13,16 @@ public class UserController(DatabaseContext context, IConfiguration configuratio
 {
     [HttpGet("Detail")]
     [Authorize]
-    public IActionResult Detail()
+    public async Task<IActionResult> Detail()
     {
-        // فرق اتنتیکیتد و اتورایزد
-        var email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-
-        var user = context.Users.FirstOrDefault(u => u.Email == email);
-        return Ok(user);
+        var result = await userService.Detail();
+        return Ok(ResponseHelper.Success(result));
     }
 
     [HttpPost("Create")]
     public async Task<IActionResult> Create(UserCreateDTO user)
     {
-        var newUser = await userService.Create(user);
-        return Ok(newUser);
+        var result = await userService.Create(user);
+        return Ok(ResponseHelper.Success(result));
     }
 }

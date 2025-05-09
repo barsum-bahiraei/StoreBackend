@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using StoreBackend.Helpers;
 using StoreBackend.Models;
 using StoreBackend.Services.Implementation;
 
@@ -8,14 +9,14 @@ namespace StoreBackend.Controllers;
 public class AuthController(AuthService authService) : ControllerBase
 {
     [HttpPost("SignIn")]
-    public IActionResult Login(LoginDTO loginModel)
+    public async Task<IActionResult> Login(LoginDTO loginModel)
     {
-        if (authService.IsValidUser(loginModel))
+        var isValidUser = await authService.IsValidUser(loginModel);
+        if (isValidUser)
         {
             var token = authService.GenerateJwtToken(loginModel.Email);
-            return Ok(token);
+            return Ok(ResponseHelper.Success(token));
         }
         return Unauthorized();
-
     }
 }

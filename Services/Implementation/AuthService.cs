@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using StoreBackend.Data;
 using StoreBackend.Helpers;
 using StoreBackend.Models;
@@ -38,10 +39,10 @@ public class AuthService(IConfiguration configuration, DatabaseContext context) 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public bool IsValidUser(LoginDTO loginModel)
+    public async Task<bool> IsValidUser(LoginDTO loginModel)
     {
         var hashPassword = HashHelper.HashSHA256(loginModel.Password, configuration);
-        var user = context.Users.FirstOrDefault(u => u.Email == loginModel.Email && u.Password == hashPassword);
+        var user = await context.Users.FirstOrDefaultAsync(u => u.Email == loginModel.Email && u.Password == hashPassword);
         return user != null;
     }
 }
