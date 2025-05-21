@@ -2,7 +2,7 @@
 
 namespace StoreBackend.Models;
 
-public class UserCreateDTO
+public class UserCreateDto
 {
     [Required(ErrorMessage = "Name is required.")]
     [StringLength(20, MinimumLength = 6, ErrorMessage = "Name must be between 6 and 20 characters.")]

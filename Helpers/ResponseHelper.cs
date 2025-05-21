@@ -4,7 +4,7 @@ namespace StoreBackend.Helpers;
 
 public static class ResponseHelper
 {
-    public static ResponseViewModel Success(object data)
+    public static ResponseViewModel Success(object? data)
     {
         return new ResponseViewModel
         {

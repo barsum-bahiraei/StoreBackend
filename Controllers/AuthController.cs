@@ -9,7 +9,7 @@ namespace StoreBackend.Controllers;
 public class AuthController(AuthService authService) : ControllerBase
 {
     [HttpPost("SignIn")]
-    public async Task<IActionResult> Login(LoginDTO loginModel)
+    public async Task<IActionResult> Login(LoginDto loginModel)
     {
         var isValidUser = await authService.IsValidUser(loginModel);
         if (isValidUser)

@@ -2,7 +2,7 @@
 
 namespace StoreBackend.Models;
 
-public class LoginDTO
+public class LoginDto
 {
     [Required(ErrorMessage = "Username is required.")]
     [EmailAddress(ErrorMessage = "Invalid Email Address.")]

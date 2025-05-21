@@ -20,7 +20,7 @@ public class UserController(DatabaseContext context, IConfiguration configuratio
     }
 
     [HttpPost("Create")]
-    public async Task<IActionResult> Create(UserCreateDTO user)
+    public async Task<IActionResult> Create(UserCreateDto user)
     {
         var result = await userService.Create(user);
         return Ok(ResponseHelper.Success(result));
