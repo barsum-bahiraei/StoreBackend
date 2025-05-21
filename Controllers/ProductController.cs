@@ -20,9 +20,9 @@ public class ProductController(IProductService productService) : ControllerBase
 
     // POST api/<ValuesController>
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] ProductCreateDto productCreateDTO)
+    public async Task<IActionResult> Post([FromBody] ProductCreateDto productCreateDto)
     {
-        var productId = await productService.Create(productCreateDTO);
+        var productId = await productService.Create(productCreateDto);
         return Ok(ResponseHelper.Success(productId));
     }
 
