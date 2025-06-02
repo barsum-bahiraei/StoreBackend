@@ -1,4 +1,5 @@
-﻿using StoreBackend.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using StoreBackend.Data;
 using StoreBackend.Entities;
 using StoreBackend.Helpers;
 using StoreBackend.Models;
@@ -9,11 +10,13 @@ namespace StoreBackend.Services.Implementation;
 
 public class UserService(DatabaseContext context, IConfiguration configuration, IHttpContextAccessor httpContextAccessor) : IUserService
 {
-    public async Task<UserDetailViewModel> Detail()
+    public async Task<UserDetailViewModel> Detail(CancellationToken cancellation)
     {
+        //var aaa = new CancellationTokenSource();
+        //aaa.CancelAfter(1000);
         var email = httpContextAccessor.HttpContext?.User.FindFirst(c => c.Type == ClaimTypes.Email)?.Value;
 
-        var user = context.Users.FirstOrDefault(u => u.Email == email);
+        var user = await context.Users.FirstOrDefaultAsync(u => u.Email == email, cancellation);
         return new UserDetailViewModel
         {
             Id = user.Id,
@@ -22,9 +25,9 @@ public class UserService(DatabaseContext context, IConfiguration configuration, 
             Name = user.Name,
         };
     }
-    public async Task<UserCreateViewModel> Create(UserCreateDto user)
+    public async Task<UserCreateViewModel> Create(UserCreateDto user, CancellationToken cancellation)
     {
-        if (context.Users.Any(u => u.Email == user.Email))
+        if (await context.Users.AnyAsync(u => u.Email == user.Email))
         {
             throw new InvalidOperationException("Email is already in use.");
         }

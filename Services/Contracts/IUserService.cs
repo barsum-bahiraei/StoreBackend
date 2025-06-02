@@ -3,6 +3,6 @@
 namespace StoreBackend.Services.Contracts;
 public interface IUserService
 {
-    Task<UserDetailViewModel> Detail();
-    Task<UserCreateViewModel> Create(UserCreateDto user);
+    Task<UserDetailViewModel> Detail(CancellationToken cancellation);
+    Task<UserCreateViewModel> Create(UserCreateDto user, CancellationToken cancellation);
 }

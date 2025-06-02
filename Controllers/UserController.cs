@@ -13,14 +13,14 @@ public class UserController(DatabaseContext context, IConfiguration configuratio
 {
     [HttpGet("Detail")]
     [Authorize]
-    public async Task<IActionResult> Detail()
+    public async Task<IActionResult> Detail(CancellationToken cancellation)
     {
         var result = await userService.Detail();
         return Ok(ResponseHelper.Success(result));
     }
 
     [HttpPost("Create")]
-    public async Task<IActionResult> Create(UserCreateDto user)
+    public async Task<IActionResult> Create(UserCreateDto user, CancellationToken cancellation)
     {
         var result = await userService.Create(user);
         return Ok(ResponseHelper.Success(result));
