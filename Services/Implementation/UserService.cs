@@ -39,7 +39,6 @@ public class UserService(DatabaseContext context, IConfiguration configuration, 
 
         await context.Users.AddAsync(newUser);
         await context.SaveChangesAsync();
-
         return
             new UserCreateViewModel
             {

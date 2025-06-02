@@ -28,7 +28,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
               .IsUnique();
 
         entity.Property(e => e.Password)
-              .IsRequired()
-              .HasMaxLength(20);
+              .IsRequired();
     }
 }
