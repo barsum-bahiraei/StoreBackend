@@ -15,8 +15,6 @@ public class UserService(DatabaseContext context, IConfiguration configuration, 
 {
     public async Task<UserDetailViewModel> Detail(CancellationToken cancellation)
     {
-        //var aaa = new CancellationTokenSource();
-        //aaa.CancelAfter(1000);
         var email = httpContextAccessor.HttpContext?.User.FindFirst(c => c.Type == ClaimTypes.Email)?.Value;
 
         var user = await context.Users.FirstOrDefaultAsync(u => u.Email == email, cancellation);
