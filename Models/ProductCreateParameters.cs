@@ -1,6 +1,6 @@
 ﻿namespace StoreBackend.Models;
 
-public class ProductCreateDto
+public class ProductCreateParameters
 {
     public string Name { get; set; }
     public int? Description { get; set; }

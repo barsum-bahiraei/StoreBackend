@@ -1,8 +1,9 @@
-﻿namespace StoreBackend.Models;
+﻿using System.ComponentModel.DataAnnotations;
 
-public class UserCreateViewModel
+namespace StoreBackend.Models;
+
+public class RegisterParameters
 {
-    public int Id { get; set; }
     public string Name { get; set; }
     public string Family { get; set; }
     public string Email { get; set; }

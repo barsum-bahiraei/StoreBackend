@@ -1,22 +1,29 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StoreBackend.Helpers;
 using StoreBackend.Models;
+using StoreBackend.Services.Contracts;
 using StoreBackend.Services.Implementation;
 
 namespace StoreBackend.Controllers;
 [Route("api/[controller]")]
 [ApiController]
-public class AuthController(AuthService authService) : ControllerBase
+public class AuthController(IUserService userService) : ControllerBase
 {
-    [HttpPost("SignIn")]
-    public async Task<IActionResult> Login(LoginDto loginModel)
+    [HttpPost("Login")]
+    public async Task<IActionResult> Login(LoginParameters parameters)
     {
-        var isValidUser = await authService.IsValidUser(loginModel);
+        var isValidUser = await userService.IsValidUser(parameters);
         if (isValidUser)
         {
-            var token = authService.GenerateJwtToken(loginModel.Email);
+            var token = userService.GenerateJwtToken(parameters.Email);
             return Ok(ResponseHelper.Success(token));
         }
         return Unauthorized();
+    }
+    [HttpPost("Register")]
+    public async Task<IActionResult> Register(RegisterParameters parameters, CancellationToken cancellation)
+    {
+        var result = await userService.Create(parameters, cancellation);
+        return Ok(ResponseHelper.Success(result));
     }
 }

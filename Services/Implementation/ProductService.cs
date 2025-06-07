@@ -24,7 +24,7 @@ public class ProductService(DatabaseContext context) : IProductService
         };
     }
 
-    public async Task<int> Create(ProductCreateDto productCreateDTO)
+    public async Task<int> Create(ProductCreateParameters productCreateDTO)
     {
         var product = new Product
         {

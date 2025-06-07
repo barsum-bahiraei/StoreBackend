@@ -15,55 +15,14 @@ builder.Services.AddCors(options =>
     options.AddPolicy("CorsPolicy", policy =>
     {
         policy
-            // دقیقاً همان Origin فرانت روی http://localhost:3000
             .WithOrigins("http://localhost:3000")
-            // یا اگر فرانت‌تان HTTPS است:
-            // .WithOrigins("https://localhost:3000")
 
             .AllowAnyHeader()
             .AllowAnyMethod()
-            // مهم: چون قرار است withCredentials=true ارسال کنید،
-            // حتماً باید این متد را فراخوانی کنید تا Access-Control-Allow-Credentials برگردد
             .AllowCredentials();
     });
 });
-
-//builder.Services.AddCors(options =>
-//{
-//    options.AddPolicy(name: "CorsPolicy", policy =>
-//    {
-//        policy
-//            // Origin دقیقاً باید با آنچه در مرورگر می‌بینید مطابقت داشته باشد:
-//            // اگر React با http اجرا می‌شود:
-//            //.WithOrigins()
-//            .AllowAnyOrigin()
-//            // اگر React شما با HTTPS اجرا می‌شود (مثلاً CRA با HTTPS=true):
-//            // .WithOrigins("https://localhost:3000")
-
-//            // به فرانت اجازه بده همه‌ی هدرها را بفرستد
-//            .AllowAnyHeader()
-//            // و از هر متدی (GET/POST/PUT/DELETE/OPTIONS) استفاده کند
-//            .AllowAnyMethod();
-
-//        // اگر قرار است کوکی یا هدرهای اعتبارسنجی (مانند Authorization) را ارسال کنید:
-//        // .AllowCredentials();
-//    });
-//});
-//builder.Services.AddCors(opt =>
-//{
-//    opt.AddPolicy(name: "CorsPolicy", builder =>
-//    {
-//        builder.AllowAnyOrigin()
-//        .AllowAnyMethod()
-//        .AllowAnyHeader();
-//    });
-//});
-
-
-
-// Add services to the container.
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddDbContext<DatabaseContext>(options =>
@@ -129,7 +88,6 @@ builder.Services.AddAuthentication(options =>
 });
 builder.Services.AddAuthorization();
 
-builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddHttpContextAccessor();

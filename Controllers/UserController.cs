@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using StoreBackend.Data;
 using StoreBackend.Helpers;
 using StoreBackend.Models;
@@ -15,14 +16,7 @@ public class UserController(DatabaseContext context, IConfiguration configuratio
     [Authorize]
     public async Task<IActionResult> Detail(CancellationToken cancellation)
     {
-        var result = await userService.Detail();
-        return Ok(ResponseHelper.Success(result));
-    }
-
-    [HttpPost("Create")]
-    public async Task<IActionResult> Create(UserCreateDto user, CancellationToken cancellation)
-    {
-        var result = await userService.Create(user);
+        var result = await userService.Detail(cancellation);
         return Ok(ResponseHelper.Success(result));
     }
 }
