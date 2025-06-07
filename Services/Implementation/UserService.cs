@@ -30,7 +30,7 @@ public class UserService(DatabaseContext context, IConfiguration configuration, 
     }
     public async Task<UserCreateViewModel> Create(UserCreateParameters parameters, CancellationToken cancellation)
     {
-        if (await context.Users.AnyAsync(u => u.Email == parameters.Email))
+        if (await context.Users.AnyAsync(u => u.Email == parameters.Email, cancellation))
         {
             return null;
         }
@@ -82,10 +82,10 @@ public class UserService(DatabaseContext context, IConfiguration configuration, 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public async Task<bool> IsValidUser(LoginParameters parameters)
+    public async Task<bool> IsValidUser(LoginParameters parameters, CancellationToken cancellation)
     {
         var hashPassword = HashHelper.HashSHA256(parameters.Password, configuration);
-        var user = await context.Users.FirstOrDefaultAsync(u => u.Email == parameters.Email && u.Password == hashPassword);
+        var user = await context.Users.FirstOrDefaultAsync(u => u.Email == parameters.Email && u.Password == hashPassword, cancellation);
         return user != null;
     }
 }

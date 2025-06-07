@@ -9,9 +9,9 @@ namespace StoreBackend.Services.Implementation;
 public class ProductService(DatabaseContext context) : IProductService
 {
 
-    public async Task<ProductDetailViewModel?> Detail(int id)
+    public async Task<ProductDetailViewModel?> Detail(int id, CancellationToken cancellation)
     {
-        var result = await context.Products.FirstOrDefaultAsync(x => x.Id == id);
+        var result = await context.Products.FirstOrDefaultAsync(x => x.Id == id, cancellation);
         if (result == null) return null;
         return new ProductDetailViewModel
         {
@@ -24,19 +24,32 @@ public class ProductService(DatabaseContext context) : IProductService
         };
     }
 
-    public async Task<int> Create(ProductCreateParameters productCreateDTO)
+    public async Task<int> Create(ProductCreateParameters parameters, CancellationToken cancellation)
     {
         var product = new Product
         {
-            Name = productCreateDTO.Name,
-            Description = productCreateDTO.Description,
-            Discount = productCreateDTO.Discount,
-            Price = productCreateDTO.Price,
-            ImageUrl = productCreateDTO.ImageUrl,
+            Name = parameters.Name,
+            Description = parameters.Description,
+            Discount = parameters.Discount,
+            Price = parameters.Price,
+            ImageUrl = parameters.ImageUrl,
         };
         await context.Products.AddAsync(product);
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(cancellation);
 
         return product.Id;
+    }
+
+    public async Task<List<ProductListViewModel>> List(ProductListParameters parameters, CancellationToken cancellation)
+    {
+        var products = await context.Products
+            .Where(x => x.Name == parameters.Name)
+            .OrderBy(x => x.Id)
+            .Select(x => new ProductListViewModel
+            {
+                Id = x.Id,
+                Name = x.Name,
+            }).ToListAsync(cancellation);
+        return products;
     }
 }

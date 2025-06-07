@@ -10,13 +10,13 @@ namespace StoreBackend.Controllers;
 public class AuthController(IUserService userService) : ControllerBase
 {
     [HttpPost("Login")]
-    public async Task<IActionResult> Login(LoginParameters parameters)
+    public async Task<IActionResult> Login(LoginParameters parameters, CancellationToken cancellation)
     {
-        var isValidUser = await userService.IsValidUser(parameters);
+        var isValidUser = await userService.IsValidUser(parameters, cancellation);
         if (isValidUser)
         {
             var token = userService.GenerateJwtToken(parameters.Email);
-            var result = new 
+            var result = new
 
             {
                 Token = token
