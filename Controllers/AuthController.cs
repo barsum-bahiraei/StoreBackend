@@ -16,7 +16,12 @@ public class AuthController(IUserService userService) : ControllerBase
         if (isValidUser)
         {
             var token = userService.GenerateJwtToken(parameters.Email);
-            return Ok(ResponseHelper.Success(token));
+            var result = new 
+
+            {
+                Token = token
+            };
+            return Ok(ResponseHelper.Success(result));
         }
         return Unauthorized();
     }
