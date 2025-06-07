@@ -42,14 +42,23 @@ public class ProductService(DatabaseContext context) : IProductService
 
     public async Task<List<ProductListViewModel>> List(ProductListParameters parameters, CancellationToken cancellation)
     {
-        var products = await context.Products
-            .Where(x => x.Name == parameters.Name)
+        IQueryable<Product> query = context.Products.AsNoTracking();
+        if (!string.IsNullOrWhiteSpace(parameters.Name))
+        {
+            query = query.Where(x => EF.Functions.Like(x.Name, $"%{parameters.Name.Trim()}%"));
+        }
+        var products = await query
             .OrderBy(x => x.Id)
             .Select(x => new ProductListViewModel
             {
                 Id = x.Id,
                 Name = x.Name,
-            }).ToListAsync(cancellation);
+                Description = x.Description,
+                Price = x.Price,
+                Discount = x.Discount,
+                ImageUrl = x.ImageUrl,
+            })
+            .ToListAsync(cancellation);
         return products;
     }
 }
