@@ -28,7 +28,7 @@ public class UserService(DatabaseContext context, IConfiguration configuration, 
             Name = user.Name,
         };
     }
-    public async Task<RegisterViewModel> Create(RegisterParameters parameters, CancellationToken cancellation)
+    public async Task<UserCreateViewModel> Create(UserCreateParameters parameters, CancellationToken cancellation)
     {
         if (await context.Users.AnyAsync(u => u.Email == parameters.Email))
         {
@@ -46,7 +46,7 @@ public class UserService(DatabaseContext context, IConfiguration configuration, 
         await context.Users.AddAsync(newUser);
         await context.SaveChangesAsync();
         return
-            new RegisterViewModel
+            new UserCreateViewModel
             {
                 Id = newUser.Id,
                 Name = newUser.Name,

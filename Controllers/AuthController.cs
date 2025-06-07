@@ -21,7 +21,7 @@ public class AuthController(IUserService userService) : ControllerBase
         return Unauthorized();
     }
     [HttpPost("Register")]
-    public async Task<IActionResult> Register(RegisterParameters parameters, CancellationToken cancellation)
+    public async Task<IActionResult> Register(UserCreateParameters parameters, CancellationToken cancellation)
     {
         var result = await userService.Create(parameters, cancellation);
         return Ok(ResponseHelper.Success(result));

@@ -2,7 +2,7 @@
 
 namespace StoreBackend.Models;
 
-public class RegisterParameters
+public class UserCreateParameters
 {
     public string Name { get; set; }
     public string Family { get; set; }
