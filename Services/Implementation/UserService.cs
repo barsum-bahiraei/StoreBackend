@@ -48,7 +48,6 @@ public class UserService(DatabaseContext context, IConfiguration configuration, 
         return
             new UserCreateViewModel
             {
-                Id = newUser.Id,
                 Name = newUser.Name,
                 Family = newUser.Family,
                 Email = newUser.Email,
